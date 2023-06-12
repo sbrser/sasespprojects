@@ -1,0 +1,49 @@
+<project name="ProjectCallAPIVI2" threads="1" pubsub="auto" heartbeat-interval="1">
+  <metadata>
+    <meta id="studioUploadedBy">sasadm</meta>
+    <meta id="studioUploaded">1686321058792</meta>
+    <meta id="studioModifiedBy">sasadm</meta>
+    <meta id="studioModified">1686603626476</meta>
+    <meta id="layout">{"cq1":{"POSTRequest":{"x":-390,"y":-655},"POSTResponse":{"x":-135,"y":-655}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="cq1">
+      <windows>
+        <window-source name="POSTRequest">
+          <schema>
+            <fields>
+              <field name="chamada" type="string" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="New_Publisher_2" connection-name="jsonVI">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[|]]></property>
+                <property name="noautogenfield"><![CDATA[false]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/mnt/data/input/jsonVI.json]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector class="adapter" name="New_Subscriber_1" connection-name="teste">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="command"><![CDATA[dfesp_rest_subscriber -C resturl=https://sas-svi-alert/svi-alert/alertingEvents,httpcontenttype=application/json,httprequestproperties="Authorization: Bearer eyJhbGciOiJSUzI1NiIsImprdSI6Imh0dHBzOi8vbG9jYWxob3N0L1NBU0xvZ29uL3Rva2VuX2tleXMiLCJraWQiOiJsZWdhY3ktdG9rZW4ta2V5IiwidHlwIjoiSldUIn0.eyJqdGkiOiIzYTg1YTA5OTc4ZDM0NjAzYWM2MjM1ZDEwNjJmNDk0MyIsImF1dGhvcml0aWVzIjpbInN2aWFkbXMiLCJzdml1c3JzIiwiVXNlckZVTEwiLCJTQVNBZG1pbmlzdHJhdG9ycyJdLCJleHRfaWQiOiJ1aWQ9c2FzYWRtLG91PXVzZXJzLGRjPWFjbWUsZGM9Y29tIiwic3ViIjoiNzA3ZjkwMWMtYTA1YS00YjNhLTgwZjMtMzZjNDA1YTU2N2U4Iiwic2NvcGUiOlsiY2xpZW50cy5yZWFkIiwiY2xpZW50cy5zZWNyZXQiLCJ1YWEucmVzb3VyY2UiLCJvcGVuaWQiLCJ1YWEuYWRtaW4iLCJjbGllbnRzLmFkbWluIiwic2NpbS5yZWFkIiwidWFhLnVzZXIiLCJTQVNBZG1pbmlzdHJhdG9ycyIsImNsaWVudHMud3JpdGUiLCJzY2ltLndyaXRlIl0sImNsaWVudF9pZCI6InNhcy5lYyIsImNpZCI6InNhcy5lYyIsImF6cCI6InNhcy5lYyIsImdyYW50X3R5cGUiOiJwYXNzd29yZCIsInVzZXJfaWQiOiI3MDdmOTAxYy1hMDVhLTRiM2EtODBmMy0zNmM0MDVhNTY3ZTgiLCJvcmlnaW4iOiJsZGFwIiwidXNlcl9uYW1lIjoic2FzYWRtIiwiZW1haWwiOiJzYXNhZG1AYWNtZS5jb20iLCJhdXRoX3RpbWUiOjE2ODY2MDI4NDIsInJldl9zaWciOiIxM2E0NDhhOCIsImlhdCI6MTY4NjYwMjg0MiwiZXhwIjoxNjg2NjA2NDQyLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0L1NBU0xvZ29uL29hdXRoL3Rva2VuIiwiemlkIjoidWFhIiwiYXVkIjpbInNjaW0iLCJjbGllbnRzIiwidWFhIiwib3BlbmlkIiwic2FzLmVjIl19.GpwFCFqsQeneB5NoSUhUL6x-1WaIyYWkjC_iVzG0cJA_AB29261zd7140FCs__yIFUvbWzV_9dPKvvAqEUlkN2Vn-lJlTb_XK_Hw7VK0BanMgX_-x0EE3YqhJtZpfevXmmu3hJShvcHYoCYGCBOYSi6LuUzdyl5EvkHO3B_kif_2VUKp3knhA-gtekYHqj5aULC8zsXzY0QaOKhAfnMFQUZC8uKgnGG_xqGboIYGY-I6YqfFdc8rMPKhVGis_AfMgttpgu4pFn6kt-gE020N8Wnj2sYh6O3u7sr0UMAafUYzmNfuNa4CkDbP85vJ9DxSMeDvUVOUijXUU9uGwPVx5g",opaquejson=chamada,respopaquejson=response,url=dfESP://localhost:31416/ProjectCallAPIVI2/cq1/POSTRequest?snapshot=true,esprespurl=dfESP://localhost:31416/ProjectCallAPIVI2/cq1/POSTResponse]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source name="POSTResponse">
+          <schema>
+            <fields>
+              <field name="chamada" type="string" key="true"/>
+              <field name="response" type="string" key="true"/>
+            </fields>
+          </schema>
+        </window-source>
+      </windows>
+    </contquery>
+  </contqueries>
+</project>
