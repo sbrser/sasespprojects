@@ -1,0 +1,352 @@
+<project name="ProjectNotaVI" threads="1" pubsub="auto" heartbeat-interval="1">
+  <metadata>
+    <meta id="studioUploadedBy">sasadm</meta>
+    <meta id="studioUploaded">1686661653932</meta>
+    <meta id="studioModifiedBy">sasadm</meta>
+    <meta id="studioModified">1686775782728</meta>
+    <meta id="layout">{"cq1":{"Arquivo_Mei":{"x":-560,"y":-1125},"CriarAlertaVI":{"x":-700,"y":-725},"Join":{"x":-700,"y":-1000},"Kafka_Nota":{"x":-940,"y":-1240},"NotaMaior19000":{"x":-700,"y":-860},"Parse_Json":{"x":-940,"y":-1120}}}</meta>
+  </metadata>
+  <lua-snippets>
+    <lua-snippet name="getToken">
+      <lua-thread func="getToken" interval="1 minutes"/>
+      <code><![CDATA[function getToken()
+           
+            local   request = {}
+            
+            request["url"] = "https://sas-logon-app/SASLogon/oauth/token"
+            request["method"] = "POST"
+            request["headers"] = {Authorization="Basic c2FzLmVjOg==", ["Content-Type"]="application/x-www-form-urlencoded"}
+            request["body"] = "grant_type=password&username=sasadm&password=lnxsas"
+            request["tolua"] = true
+
+            local  response = esp_sendHttp(request)
+            
+            local   code,err = esp_setProperty({name="token",value=response.response.access_token})
+
+            if (code == false)
+            then
+                print("cannot set property: "..tostring(err))
+            else
+                print("set property: Ok")
+            end
+            
+            esp_setProperty({name="token",value=response.response.access_token})
+
+            -- print(esp_toString(response.response.access_token))
+            
+ 
+        end]]></code>
+    </lua-snippet>
+  </lua-snippets>
+  <contqueries>
+    <contquery name="cq1">
+      <windows>
+        <window-source name="Arquivo_Mei">
+          <schema>
+            <fields>
+              <field name="cnpj" type="int64" key="true"/>
+              <field name="delegacia" type="string"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="cnpj">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="fsname"><![CDATA[/mnt/data/input/cnpj_mei.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source name="Kafka_Nota">
+          <schema>
+            <fields>
+              <field name="chaveAcesso" type="string" key="true"/>
+              <field name="nrProtocolo" type="string"/>
+              <field name="nrRecibo" type="string"/>
+              <field name="dtRecibo" type="string"/>
+              <field name="dtEmissao" type="array(i64)"/>
+              <field name="serie" type="int32"/>
+              <field name="nnf" type="int32"/>
+              <field name="dsaient" type="array(i64)"/>
+              <field name="dhcont" type="string"/>
+              <field name="versao" type="string"/>
+              <field name="cuf" type="int32"/>
+              <field name="cnf" type="int32"/>
+              <field name="natop" type="string"/>
+              <field name="indpag" type="string"/>
+              <field name="indIntermed" type="int32"/>
+              <field name="mod" type="int32"/>
+              <field name="tpnf" type="int32"/>
+              <field name="iddest" type="int32"/>
+              <field name="cmunfg" type="int32"/>
+              <field name="tpimp" type="int32"/>
+              <field name="tpemis" type="int32"/>
+              <field name="cdv" type="int32"/>
+              <field name="tpamb" type="int32"/>
+              <field name="finnfe" type="int32"/>
+              <field name="procemi" type="int32"/>
+              <field name="verproc" type="string"/>
+              <field name="indFinal" type="int32"/>
+              <field name="indPres" type="int32"/>
+              <field name="infadfisco" type="string"/>
+              <field name="infcpl" type="string"/>
+              <field name="emit_cnpj" type="int64"/>
+              <field name="emit_cpf" type="string"/>
+              <field name="emit_xnome" type="string"/>
+              <field name="emit_xfant" type="string"/>
+              <field name="emit_ie" type="int64"/>
+              <field name="emit_ieSt" type="string"/>
+              <field name="emit_im" type="string"/>
+              <field name="emit_cnae" type="string"/>
+              <field name="emit_crt" type="int32"/>
+              <field name="emit_isuf" type="string"/>
+              <field name="emit_xlgr" type="string"/>
+              <field name="emit_nro" type="string"/>
+              <field name="emit_xcpl" type="string"/>
+              <field name="emit_xbairro" type="string"/>
+              <field name="emit_cmun" type="int32"/>
+              <field name="emit_xmun" type="string"/>
+              <field name="emit_uf" type="string"/>
+              <field name="emit_cep" type="int32"/>
+              <field name="emit_cpais" type="int32"/>
+              <field name="emit_xpais" type="string"/>
+              <field name="emit_fone" type="string"/>
+              <field name="emit_email" type="string"/>
+              <field name="emit_idEstrangeiro" type="string"/>
+              <field name="emit_indIEDest" type="int32"/>
+              <field name="dest_cnpj" type="string"/>
+              <field name="dest_cpf" type="int64"/>
+              <field name="dest_xnome" type="string"/>
+              <field name="dest_xfant" type="string"/>
+              <field name="dest_ie" type="string"/>
+              <field name="dest_ieSt" type="string"/>
+              <field name="dest_im" type="string"/>
+              <field name="dest_cnae" type="string"/>
+              <field name="dest_crt" type="string"/>
+              <field name="dest_isuf" type="string"/>
+              <field name="dest_xlgr" type="string"/>
+              <field name="dest_nro" type="string"/>
+              <field name="dest_xcpl" type="string"/>
+              <field name="dest_xbairro" type="string"/>
+              <field name="dest_cmun" type="int32"/>
+              <field name="dest_xmun" type="string"/>
+              <field name="dest_uf" type="string"/>
+              <field name="dest_cep" type="int32"/>
+              <field name="dest_cpais" type="int32"/>
+              <field name="dest_xpais" type="string"/>
+              <field name="dest_fone" type="string"/>
+              <field name="dest_email" type="string"/>
+              <field name="dest_idEstrangeiro" type="string"/>
+              <field name="dest_indIEDest" type="int32"/>
+              <field name="entrega_cnpj" type="string"/>
+              <field name="entrega_cpf" type="string"/>
+              <field name="entrega_xnome" type="string"/>
+              <field name="entrega_xfant" type="string"/>
+              <field name="entrega_ie" type="string"/>
+              <field name="entrega_ieSt" type="string"/>
+              <field name="entrega_im" type="string"/>
+              <field name="entrega_cnae" type="string"/>
+              <field name="entrega_crt" type="string"/>
+              <field name="entrega_isuf" type="string"/>
+              <field name="entrega_xlgr" type="string"/>
+              <field name="entrega_nro" type="string"/>
+              <field name="entrega_xcpl" type="string"/>
+              <field name="entrega_xbairro" type="string"/>
+              <field name="entrega_cmun" type="int32"/>
+              <field name="entrega_xmun" type="string"/>
+              <field name="entrega_uf" type="string"/>
+              <field name="entrega_cep" type="string"/>
+              <field name="entrega_cpais" type="string"/>
+              <field name="entrega_xpais" type="string"/>
+              <field name="entrega_fone" type="string"/>
+              <field name="entrega_email" type="string"/>
+              <field name="entrega_idEstrangeiro" type="string"/>
+              <field name="entrega_indIEDest" type="string"/>
+              <field name="retirada_cnpj" type="string"/>
+              <field name="retirada_cpf" type="string"/>
+              <field name="retirada_xnome" type="string"/>
+              <field name="retirada_xfant" type="string"/>
+              <field name="retirada_ie" type="string"/>
+              <field name="retirada_ieSt" type="string"/>
+              <field name="retirada_im" type="string"/>
+              <field name="retirada_cnae" type="string"/>
+              <field name="retirada_crt" type="string"/>
+              <field name="retirada_isuf" type="string"/>
+              <field name="retirada_xlgr" type="string"/>
+              <field name="retirada_nro" type="string"/>
+              <field name="retirada_xcpl" type="string"/>
+              <field name="retirada_xbairro" type="string"/>
+              <field name="retirada_cmun" type="string"/>
+              <field name="retirada_xmun" type="string"/>
+              <field name="retirada_uf" type="string"/>
+              <field name="retirada_cep" type="string"/>
+              <field name="retirada_cpais" type="string"/>
+              <field name="retirada_xpais" type="string"/>
+              <field name="retirada_fone" type="string"/>
+              <field name="retirada_email" type="string"/>
+              <field name="retirada_idEstrangeiro" type="string"/>
+              <field name="retirada_indIEDest" type="string"/>
+              <field name="vnf" type="double"/>
+              <field name="vserv" type="string"/>
+              <field name="vbc_iss" type="string"/>
+              <field name="viss" type="string"/>
+              <field name="retTrib_vRetPis" type="string"/>
+              <field name="retTrib_vRetCofins" type="string"/>
+              <field name="retTrib_vRetCsll" type="string"/>
+              <field name="retTrib_vBcIrrf" type="string"/>
+              <field name="retTrib_vIrrf" type="string"/>
+              <field name="retTrib_vBcRetPrev" type="string"/>
+              <field name="retTrib_vRetPrev" type="string"/>
+              <field name="cobr_nfat" type="string"/>
+              <field name="cobr_vOrig" type="string"/>
+              <field name="cobr_vDesc" type="string"/>
+              <field name="cobr_vLiq" type="string"/>
+              <field name="infIntermed_cnpj" type="string"/>
+              <field name="infIntermed_idCadIntTran" type="string"/>
+              <field name="ufSaidaPais" type="string"/>
+              <field name="infRespTec_cnpj" type="int64"/>
+              <field name="infRespTec_xContato" type="string"/>
+              <field name="infRespTec_email" type="string"/>
+              <field name="infRespTec_fone" type="string"/>
+              <field name="infRespTec_idCsrt" type="string"/>
+              <field name="infRespTec_hashCsrt" type="string"/>
+              <field name="vicmsdeson" type="double"/>
+              <field name="vicmsufremet" type="double"/>
+              <field name="vbc" type="double"/>
+              <field name="vicms" type="double"/>
+              <field name="vii" type="double"/>
+              <field name="vfcp" type="double"/>
+              <field name="vtotTrib" type="double"/>
+              <field name="vfcpufdest" type="double"/>
+              <field name="vfcpst" type="double"/>
+              <field name="vfcpstret" type="double"/>
+              <field name="vcofins" type="double"/>
+              <field name="vipi" type="double"/>
+              <field name="vseg" type="double"/>
+              <field name="vfrete" type="double"/>
+              <field name="vprod" type="double"/>
+              <field name="vpis" type="double"/>
+              <field name="vicmsufdest" type="double"/>
+              <field name="vbcst" type="double"/>
+              <field name="voutro" type="double"/>
+              <field name="vst" type="double"/>
+              <field name="vdesc" type="double"/>
+              <field name="vipidevol" type="double"/>
+              <field name="xlocDespacho" type="string"/>
+              <field name="xped" type="string"/>
+              <field name="xcont" type="string"/>
+              <field name="xnemp" type="string"/>
+              <field name="xlocExporta" type="string"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="kafka" name="Kafka">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="kafkainitialoffset"><![CDATA[largest]]></property>
+                <property name="kafkapartition"><![CDATA[0]]></property>
+                <property name="kafkahostport"><![CDATA[my-cluster-kafka-bootstrap.default.svc.cluster.local:9092]]></property>
+                <property name="kafkatopic"><![CDATA[my-topic]]></property>
+                <property name="kafkatype"><![CDATA[json]]></property>
+                <property name="urlhostport"><![CDATA[my-cluster-kafka-bootstrap_9092]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-join name="Join">
+          <join type="inner">
+            <conditions>
+              <fields left="emit_cnpj" right="cnpj"/>
+            </conditions>
+          </join>
+          <output>
+            <field-selection name="dtEmissaost" source="l_dtEmissaost"/>
+            <field-selection name="emit_cnpj" source="l_emit_cnpj"/>
+            <field-selection name="vnf" source="l_vnf"/>
+            <field-selection name="cnpj" source="r_cnpj"/>
+            <field-selection name="delegacia" source="r_delegacia"/>
+            <field-selection name="timestamp_in" source="l_timestamp_in"/>
+          </output>
+        </window-join>
+        <window-filter name="NotaMaior19000">
+          <expression><![CDATA[vnf  >= 19998]]></expression>
+        </window-filter>
+        <window-functional index="pi_EMPTY" name="Parse_Json">
+          <description><![CDATA[Parse do Json vindo do Kakfa e carimbo do timestamp de entrada.]]></description>
+          <schema>
+            <fields>
+              <field name="chaveAcesso" type="string" key="true"/>
+              <field name="dtEmissao" type="array(i64)"/>
+              <field name="dtEmissaost" type="date"/>
+              <field name="teste" type="string"/>
+              <field name="emit_cnpj" type="int64"/>
+              <field name="vnf" type="double"/>
+              <field name="timestamp_in" type="stamp"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="timestamp_in"><![CDATA[systemMicro()]]></function>
+              <function name="dtEmissaost"><![CDATA[timeParse(string(arrayItem($dtEmissao,0),'-',arrayItem($dtEmissao,1),'-',arrayItem($dtEmissao,2),'-',arrayItem($dtEmissao,3),':',arrayItem($dtEmissao,4),':',arrayItem($dtEmissao,5)),'%Y-%-m-%-d-%-H:%-M:%-S')]]></function>
+              <function name="teste"><![CDATA[string(arrayItem($dtEmissao,0),'-',arrayItem($dtEmissao,1),'-',arrayItem($dtEmissao,2),'-',arrayItem($dtEmissao,3),':',arrayItem($dtEmissao,4),':',arrayItem($dtEmissao,5))]]></function>
+            </functions>
+          </function-context>
+        </window-functional>
+        <window-lua events="create" name="CriarAlertaVI">
+          <schema>
+            <fields>
+              <field name="chaveAcesso" type="string" key="true"/>
+              <field name="dtEmissaost" type="date"/>
+              <field name="emit_cnpj" type="int64"/>
+              <field name="vnf" type="double"/>
+              <field name="cnpj" type="int64"/>
+              <field name="delegacia" type="string"/>
+              <field name="timestamp_in" type="stamp"/>
+            </fields>
+          </schema>
+          <copy/>
+          <code><![CDATA[--[[--Created by sasadm at 6/14/2023, 4:57:56 PM--]]--
+function create(data,context)
+    if (data.vnf > 0) then
+        print("Evento"..data.chaveAcesso)
+        local   token,err = esp_getProperty({name="token"})
+
+        local   request = {}
+
+        request["url"] = "https://sas-svi-alert/svi-alert/alertingEvents"
+        request["method"] = "POST"
+        request["headers"] = {["Content-Type"]="application/json", Authorization="Bearer "..token}
+        request["body"] = '{"alertingEvents": [    {"alertingEventId": "'..data.chaveAcesso..'","actionableEntityId": "1047001","actionableEntityType": "NFESP","alertOriginCd": "BATCH","alertTypeCd": "BATCH","domainId": "d_3756593","score": "777","recQueueId": "queue_48502928"    }  ],  "scenarioFiredEvents": [    {"alertingEventId": "2020180422","scenarioFiredEventId": "78cb40c7-9565-4769-972a-49e019eea208","scenarioId": "00REGRA001","scenarioName": "REGRA001","scenarioDescription": "","scenarioOriginCd": "SAS-GUID","displayFlg": "true","displayTypeCd": "text","score": "50"    }  ],  "enrichment": [    {"alertingEventId": "2020180422","teste": "enriquec"    }  ]}'
+        request["tolua"] = true
+        print(esp_toString(request))
+        
+        local   response = esp_sendHttp(request)
+        print(esp_toString(response))
+    end 
+end]]></code>
+        </window-lua>
+      </windows>
+      <edges>
+        <edge source="Join" target="NotaMaior19000"/>
+        <edge source="Kafka_Nota" target="Parse_Json"/>
+        <edge source="Parse_Json" target="Join" role="left"/>
+        <edge source="Arquivo_Mei" target="Join" role="right"/>
+        <edge source="NotaMaior19000" target="CriarAlertaVI"/>
+      </edges>
+    </contquery>
+  </contqueries>
+  <project-connectors>
+    <connector-groups>
+      <connector-group name="Lookup">
+        <connector-entry connector="cq1/Arquivo_Mei/cnpj" state="finished"/>
+      </connector-group>
+      <connector-group name="Streaming">
+        <connector-entry connector="cq1/Kafka_Nota/Kafka" state="running"/>
+      </connector-group>
+    </connector-groups>
+    <edges>
+      <edge source="Lookup" target="Streaming"/>
+    </edges>
+  </project-connectors>
+</project>
